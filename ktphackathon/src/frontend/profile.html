@@ -221,12 +221,52 @@
       border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     }
 
+    .profile-pic-container {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      cursor: default;
+      transition: all 0.3s ease;
+    }
+
+    .profile-pic-container.editable {
+      cursor: pointer;
+    }
+
     .profile-pic-section .profile-pic {
       width: 150px;
       height: 150px;
       border-radius: 50%;
       object-fit: cover;
       border: 4px solid #ffcc00;
+    }
+
+    .profile-pic-placeholder {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 4px solid #666;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .profile-pic-container.editable .profile-pic-placeholder:hover {
+      border-color: #ffcc00;
+      background: rgba(255, 204, 0, 0.1);
+    }
+
+    .plus-icon {
+      font-size: 3rem;
+      color: #666;
+      font-weight: 300;
+      transition: color 0.3s ease;
+    }
+
+    .profile-pic-container.editable .profile-pic-placeholder:hover .plus-icon {
+      color: #ffcc00;
     }
 
     .profile-pic-info h2 {
@@ -741,7 +781,13 @@
 
       <!-- Profile Picture -->
       <div class="profile-pic-section">
-        <img src="images/profile.jpg" alt="Profile Picture" class="profile-pic" id="profileImage">
+        <div class="profile-pic-container">
+          <img src="" alt="Profile Picture" class="profile-pic" id="profileImage" style="display: none;">
+          <div class="profile-pic-placeholder" id="profilePlaceholder">
+            <span class="plus-icon">+</span>
+          </div>
+          <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+        </div>
         <div class="profile-pic-info">
           <h2 id="displayName">User</h2>
           <p id="displayBio">No bio provided</p>
