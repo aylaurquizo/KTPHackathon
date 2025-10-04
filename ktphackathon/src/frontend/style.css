@@ -1,0 +1,29 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #fff; 
+  margin: 0;
+  padding: 0px;
+  height: 100vh;
+  font-size: 10rem;
+
+
+  background: 
+    linear-gradient(to right, rgba(0,0,0,0) 30%, rgba(0,0,0,1) 55%), /* fade ends at middle */
+    url('images/KTPHackBG.jpeg') no-repeat;
+  background-size: cover;
+  background-position: 20% 10%;
+}
+
+button {
+  padding: 10px 20px;
+  background: #0077ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #005fcc;
+}
