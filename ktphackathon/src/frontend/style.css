@@ -1,0 +1,98 @@
+body {
+  color: #fff; 
+  margin: 0;
+  padding: 0px;
+  height: 100vh;
+
+  background: 
+    linear-gradient(to right, rgba(0,0,0,0) 30%, rgba(0,0,0,1) 55%), /* fade ends at middle */
+    url('images/KTPHackBG.jpeg') no-repeat;
+  background-size: cover;
+  background-position: 20% 10%;
+}
+
+.title {
+  font-size: 20rem;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 3rem;       
+  color: #ffffff;        
+  font-style: italic;
+  text-align: center;
+  margin-top: 0;
+}
+
+
+
+
+
+/* Nav Bar */
+.navbar {
+  width: 100%;
+  position: fixed; /* stays on top */
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.6); /* semi-transparent black */
+  padding: 15px 0;
+  z-index: 1000;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar li {
+  margin: 0 20px;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 1.2rem;
+  transition: color 0.3s;
+}
+
+.navbar a:hover {
+  color: #ffcc00;
+}
+
+.profile-container {
+  max-width: 800px;
+  margin: 120px auto; /* space below navbar */
+  text-align: center;
+  color: #fff;
+  padding: 20px;
+}
+
+.profile-pic {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.profile-container h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.profile-container .bio {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+}
+
+.profile-container .details p {
+  font-size: 1.2rem;
+  margin: 5px 0;
+}
+
+
