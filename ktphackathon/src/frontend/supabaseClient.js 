@@ -3,6 +3,7 @@
 
 const SUPABASE_URL = 'https://dzvjwtxcdlrpfswkgehb.supabase.co'; 
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6dmp3dHhjZGxycGZzd2tnZWhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1ODU3NzIsImV4cCI6MjA3NTE2MTc3Mn0.ah2Bssm0Zaiovi22Nf-mq9fejr7E_o7VDi2f-oafwnQ'; 
+
 // supabaseClient.js
 
 if (typeof window.supabase === 'undefined') {
