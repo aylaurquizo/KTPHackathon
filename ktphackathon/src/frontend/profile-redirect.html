@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading - NutriCrate</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #ffcc00;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 1.2rem;
+      color: #ffcc00;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p class="loading-text">Loading...</p>
+  </div>
+
+  <!-- Load Supabase JS library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Supabase client configuration (inline) -->
+  <script>
+    // Replace these with your actual Supabase credentials
+    const SUPABASE_URL = 'https://dzvjwtxcdlrpfswkgehb.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6dmp3dHhjZGxycGZzd2tnZWhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1ODU3NzIsImV4cCI6MjA3NTE2MTc3Mn0.ah2Bssm0Zaiovi22Nf-mq9fejr7E_o7VDi2f-oafwnQ'; 
+
+
+    // Initialize Supabase client
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Auth helper functions
+    const auth = {
+      async getSession() {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        return session;
+      }
+    };
+
+    // Export to window
+    window.supabaseAuth = auth;
+  </script>
+
+  <script>
+    // Check authentication status and redirect accordingly
+    async function checkAuthAndRedirect() {
+      try {
+        // Check if user is logged in
+        const session = await window.supabaseAuth.getSession();
+        
+        if (session && session.user) {
+          // User is logged in, redirect to profile page
+          window.location.replace('profile.html');
+        } else {
+          // User is not logged in, redirect to login page
+          window.location.replace('login.html');
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        // On error, default to login page
+        window.location.replace('login.html');
+      }
+    }
+
+    // Run the check immediately when page loads
+    checkAuthAndRedirect();
+  </script>
+</body>
+</html>

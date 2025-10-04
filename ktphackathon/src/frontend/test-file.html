@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase Setup Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 40px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    h1 {
+      color: #ffcc00;
+    }
+    .test-item {
+      background: #2a2a2a;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border-left: 4px solid #666;
+    }
+    .test-item.success {
+      border-left-color: #10b981;
+    }
+    .test-item.error {
+      border-left-color: #dc2626;
+    }
+    .test-item.warning {
+      border-left-color: #ffcc00;
+    }
+    .label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .value {
+      color: #aaa;
+      word-break: break-all;
+    }
+    button {
+      background: #ffcc00;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 10px 5px;
+    }
+    button:hover {
+      background: #ffdd33;
+    }
+    .code {
+      background: #000;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔧 Supabase Setup Diagnostic</h1>
+  <p>This page will check if everything is configured correctly.</p>
+
+  <div id="results"></div>
+
+  <div style="margin-top: 30px;">
+    <button onclick="runTests()">Run Tests Again</button>
+    <button onclick="testSignup()">Test Signup</button>
+  </div>
+
+  <!-- Load Supabase JS library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Load our Supabase client configuration -->
+  <script src="./supabaseClient.js"></script>
+
+  <script>
+    function addResult(title, message, status = 'info') {
+      const resultsDiv = document.getElementById('results');
+      const item = document.createElement('div');
+      item.className = `test-item ${status}`;
+      item.innerHTML = `
+        <div class="label">${status === 'success' ? '✅' : status === 'error' ? '❌' : '⚠️'} ${title}</div>
+        <div class="value">${message}</div>
+      `;
+      resultsDiv.appendChild(item);
+    }
+
+    function runTests() {
+      // Clear previous results
+      document.getElementById('results').innerHTML = '';
+
+      // Test 1: Check if Supabase library loaded
+      if (typeof window.supabase !== 'undefined') {
+        addResult('Supabase Library', 'Loaded successfully ✓', 'success');
+      } else {
+        addResult('Supabase Library', 'NOT LOADED - Check internet connection', 'error');
+        return;
+      }
+
+      // Test 2: Check if supabaseClient.js loaded
+      if (typeof window.supabaseAuth !== 'undefined') {
+        addResult('supabaseClient.js', 'File loaded successfully ✓', 'success');
+      } else {
+        addResult('supabaseClient.js', 'NOT LOADED - Check if file exists in same folder', 'error');
+        addResult('File Location', 'supabaseClient.js must be in the same folder as this HTML file', 'warning');
+        return;
+      }
+
+      // Test 3: Check Supabase URL (from the global supabase object if accessible)
+      try {
+        // Try to read from a script tag or global variable
+        const scriptContent = document.querySelector('script[src="supabaseClient.js"]');
+        addResult('Configuration File', 'supabaseClient.js is referenced correctly', 'success');
+      } catch (e) {
+        addResult('Configuration', 'Could not verify supabaseClient.js reference', 'warning');
+      }
+
+      // Test 4: Check if auth functions exist
+      const authFunctions = ['signUp', 'signIn', 'signOut', 'getCurrentUser', 'getSession'];
+      let allFunctionsExist = true;
+      authFunctions.forEach(func => {
+        if (typeof window.supabaseAuth[func] !== 'function') {
+          allFunctionsExist = false;
+        }
+      });
+
+      if (allFunctionsExist) {
+        addResult('Auth Functions', 'All authentication functions available ✓', 'success');
+      } else {
+        addResult('Auth Functions', 'Some authentication functions are missing', 'error');
+      }
+
+      // Test 5: Instructions for next steps
+      addResult(
+        'Next Steps', 
+        `1. Make sure you added your Supabase URL and API Key to supabaseClient.js<br>
+         2. Get your credentials from: Supabase Dashboard → Settings → API<br>
+         3. Click "Test Signup" button above to test account creation`,
+        'warning'
+      );
+
+      // Test 6: Show what credentials look like (without revealing them)
+      addResult(
+        'Credentials Format',
+        `In supabaseClient.js, replace:<br>
+        <div class="code">
+        const SUPABASE_URL = 'https://xxxxxxxxxxxxx.supabase.co';<br>
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';</div>`,
+        'info'
+      );
+    }
+
+    async function testSignup() {
+      document.getElementById('results').innerHTML = '';
+      addResult('Test Signup', 'Starting test signup...', 'info');
+
+      if (!window.supabaseAuth) {
+        addResult('Error', 'supabaseAuth not found. Run tests first.', 'error');
+        return;
+      }
+
+      const testEmail = 'test' + Date.now() + '@example.com';
+      const testPassword = 'testpassword123';
+      const testName = 'Test User';
+
+      addResult('Test Data', `Email: ${testEmail}<br>Password: ${testPassword}<br>Name: ${testName}`, 'info');
+
+      try {
+        addResult('Status', 'Calling supabaseAuth.signUp()...', 'info');
+        
+        const result = await window.supabaseAuth.signUp(testEmail, testPassword, testName);
+        
+        addResult('Signup Result', 'SUCCESS! Account created ✓', 'success');
+        addResult('Response', JSON.stringify(result, null, 2), 'success');
+        addResult('What Now?', 'Check your Supabase dashboard → Authentication → Users to see the new user', 'info');
+        
+      } catch (error) {
+        addResult('Signup Failed', error.message, 'error');
+        addResult('Error Details', JSON.stringify(error, null, 2), 'error');
+        
+        if (error.message.includes('URL') || error.message.includes('credentials')) {
+          addResult('Fix', 'Make sure you replaced YOUR_SUPABASE_URL_HERE and YOUR_SUPABASE_ANON_KEY_HERE in supabaseClient.js with your actual credentials', 'warning');
+        }
+      }
+    }
+
+    // Run tests on page load
+    window.addEventListener('load', () => {
+      setTimeout(runTests, 500);
+    });
+  </script>
+</body>
+</html>
