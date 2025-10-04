@@ -3,21 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KTP Hackathon</title>
+  <title>Products | NutriCrate</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="products-page">
   <nav class="navbar">
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
-      <li><a href="products.html">Products</a></li>
+      <li><a href="products.html" class="active">Products</a></li>
       <li><a href="profile.html">Profile</a></li>
     </ul>
   </nav>
 
-    <h1>Products</h1>
+  <main class="products-container">
+    <h1>Our Mystery Boxes</h1>
+    <p class="products-subtitle">Discover amazing supplement boxes from top brands</p>
 
-  <script src="script.js"></script>
+    <!-- Filter buttons -->
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-category="all">All Boxes</button>
+      <button class="filter-btn" data-category="energy_drinks">Energy Drinks</button>
+      <button class="filter-btn" data-category="protein_bars">Protein Bars</button>
+      <button class="filter-btn" data-category="protein_powders">Protein Powders</button>
+      <button class="filter-btn" data-category="creatine">Creatine</button>
+      <button class="filter-btn" data-category="pre_workout">Pre-Workout</button>
+      <button class="filter-btn" data-category="protein_sweets">Protein Sweets</button>
+      <button class="filter-btn" data-category="combo_boxes">Combo Boxes</button>
+      <button class="filter-btn" data-category="starter_boxes">Starter Boxes</button>
+      <button class="filter-btn" data-category="specialty_boxes">Specialty</button>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading" class="loading">
+      <p>Loading products...</p>
+    </div>
+
+    <!-- Products grid -->
+    <div id="products-grid" class="products-grid">
+      <!-- Products will be dynamically loaded here -->
+    </div>
+
+    <!-- Error message -->
+    <div id="error-message" class="error-message" style="display: none;">
+      <p>Unable to load products. Please try again later.</p>
+    </div>
+  </main>
+
+  <script src="products.js"></script>
 </body>
 </html>
