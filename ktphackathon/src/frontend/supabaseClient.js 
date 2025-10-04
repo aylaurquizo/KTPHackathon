@@ -1,0 +1,139 @@
+// supabaseClient.js
+// Replace these with your actual Supabase credentials from Settings > API
+
+const SUPABASE_URL = 'https://dzvjwtxcdlrpfswkgehb.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6dmp3dHhjZGxycGZzd2tnZWhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1ODU3NzIsImV4cCI6MjA3NTE2MTc3Mn0.ah2Bssm0Zaiovi22Nf-mq9fejr7E_o7VDi2f-oafwnQ'; 
+// supabaseClient.js
+
+if (typeof window.supabase === 'undefined') {
+  console.error('❌ Supabase library not loaded!');
+}
+
+if (SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
+  console.error('❌ Please add your Supabase credentials!');
+  alert('Please add your Supabase URL and API key to supabaseClient.js');
+}
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+console.log('✅ Supabase client initialized');
+
+const auth = {
+  async signUp(email, password, fullName) {
+    console.log('📝 Starting signup for:', email);
+    
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          full_name: fullName
+        }
+      }
+    });
+
+    console.log('Auth response:', authData, authError);
+
+    if (authError) throw authError;
+
+    if (authData.user) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([{
+          id: authData.user.id,
+          email: email,
+          full_name: fullName,
+          dietary_restrictions: {},
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }]);
+
+      if (profileError) {
+        console.error('Profile error:', profileError);
+      }
+    }
+
+    return authData;
+  },
+
+  async signIn(email, password) {
+    console.log('🔐 Starting login for:', email);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  },
+
+  async getSession() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    return session;
+  }
+};
+
+const profile = {
+  async getProfile(userId) {
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateProfile(userId, updates) {
+    const { data, error } = await supabase.from('profiles')
+      .update({...updates, updated_at: new Date().toISOString()})
+      .eq('id', userId).select().single();
+    if (error) throw error;
+    return data;
+  }
+};
+
+const address = {
+  async getPrimaryAddress(userId) {
+    const { data, error } = await supabase.from('addresses').select('*')
+      .eq('user_id', userId).order('created_at', { ascending: true }).limit(1).single();
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  },
+
+  async createAddress(userId, addressData) {
+    const { data, error } = await supabase.from('addresses').insert([{
+      user_id: userId,
+      ...addressData,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }]).select().single();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateAddress(addressId, addressData) {
+    const { data, error } = await supabase.from('addresses')
+      .update({...addressData, updated_at: new Date().toISOString()})
+      .eq('id', addressId).select().single();
+    if (error) throw error;
+    return data;
+  }
+};
+
+const subscription = {
+  async getActiveSubscription(userId) {
+    const { data, error } = await supabase.from('subscriptions').select('*, addresses(*)')
+      .eq('user_id', userId).eq('status', 'active').single();
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  }
+};
+
+window.supabaseAuth = auth;
+window.supabaseProfile = profile;
+window.supabaseAddress = address;
+window.supabaseSubscription = subscription;
+
+console.log('✅ Supabase helper functions ready');
